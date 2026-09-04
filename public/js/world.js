@@ -27,7 +27,7 @@ export class World {
   constructor(canvas, bgCanvas, opts = {}) {
     this.canvas = canvas;
     this.bgCanvas = bgCanvas;
-    this.ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+    this.ctx = canvas.getContext('2d', { alpha: true });
     this.bgCtx = bgCanvas.getContext('2d', { alpha: false });
 
     this.reduced = !!opts.reduced;
@@ -52,6 +52,7 @@ export class World {
     this.rangoli = new Rangoli();
 
     this.cam = { y: 0, target: 0 };
+    this._bgShift = null;
     this.warmth = 0;
     this.warmthTarget = 0;
     this.skyAlpha = 1;
@@ -351,7 +352,11 @@ export class World {
 
     /* camera */
     this.cam.y += (this.cam.target - this.cam.y) * clamp(dt * 1.6, 0, 1);
-    this.bgCanvas.style.transform = `translate3d(0, ${(this.cam.y * 0.26).toFixed(2)}px, 0)`;
+    const bgShift = Math.round(this.cam.y * 0.26 * 10) / 10;
+    if (bgShift !== this._bgShift) {
+      this._bgShift = bgShift;
+      this.bgCanvas.style.transform = `translate3d(0, ${bgShift}px, 0)`;
+    }
 
     /* warmth of the night */
     this.warmth += (this.warmthTarget - this.warmth) * clamp(dt * 0.8, 0, 1);
@@ -480,7 +485,7 @@ export class World {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       ctx.globalAlpha = 0.21 * this.formGlow * this.skyAlpha;
-      ctx.drawImage(this.textFormation.glow, r.x, r.y - this.cam.y * 0.55);
+      ctx.drawImage(this.textFormation.glow, r.x, r.y - this.cam.y * 0.64);
       ctx.restore();
     }
 

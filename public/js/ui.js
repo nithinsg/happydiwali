@@ -5,9 +5,15 @@
  * so it is selectable, translatable and available to screen readers.
  */
 
+import { Timeline } from './utils.js';
+
 export class UI {
   constructor(root) {
     this.root = root;
+    /* Timed UI beats go through a cancellable timeline so a replay kills any
+       continuation still parked inside a cross-fade, rather than letting a
+       stale one wake up and write over the new run. */
+    this.timeline = new Timeline();
     this.el = {
       caption: document.getElementById('caption'),
       hint: document.getElementById('hint'),
@@ -29,7 +35,7 @@ export class UI {
   }
 
   _wait(ms) {
-    return new Promise((r) => setTimeout(r, ms / this.speed));
+    return this.timeline.wait(ms / this.speed);
   }
 
   /**
@@ -141,6 +147,7 @@ export class UI {
   }
 
   reset() {
+    this.timeline.reset();
     this.el.greeting.hidden = true;
     this.el.greeting.dataset.visible = 'false';
     this.el.share.hidden = true;

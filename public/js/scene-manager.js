@@ -55,6 +55,7 @@ export class SceneManager {
     this.state = STATES.INTRO;
     this.onState = null;
     this._litResolve = null;
+    this._litPending = 0;
     this._running = false;
 
     /* the only sound a firework makes here is a soft distant sparkle */
@@ -66,6 +67,11 @@ export class SceneManager {
         const r = this._litResolve;
         this._litResolve = null;
         r(n);
+      } else {
+        /* Latch it. Someone can light the diya before the narrative has got
+           round to waiting on it, and dropping that signal would strand them
+           in front of a lit lamp with nothing happening. */
+        this._litPending = n;
       }
     };
   }
@@ -90,6 +96,11 @@ export class SceneManager {
   }
 
   waitForLit() {
+    if (this._litPending) {
+      const n = this._litPending;
+      this._litPending = 0;
+      return Promise.resolve(n);
+    }
     return new Promise((resolve) => { this._litResolve = resolve; });
   }
 
@@ -117,9 +128,15 @@ export class SceneManager {
     await this.wait(420);
     world.placeHero({ igniteTime: 1.75 });
     ui.armDiya(true, 'Light the diya');
-    await ui.caption('Some lights are meant to be shared.');
-    await this.wait(1700);
-    ui.hint('Light the first diya.');
+
+    /* The opening copy plays alongside the invitation rather than gating it.
+       Someone who reaches for the diya in the first second should not have to
+       wait for a sentence to finish before the story moves. */
+    void (async () => {
+      await ui.caption('Some lights are meant to be shared.');
+      await this.wait(1700);
+      if (this.state === STATES.INTRO) ui.hint('Light the first diya.');
+    })();
 
     /* ------------------------------------------- the first little light */
     await this.waitForLit();
@@ -248,6 +265,8 @@ export class SceneManager {
   async replay() {
     this.timeline.reset();
     this._litResolve = null;
+    this._litPending = 0;
+    this._litPending = 0;
     this._running = false;
     this.world.reset();
     this.ui.reset();
