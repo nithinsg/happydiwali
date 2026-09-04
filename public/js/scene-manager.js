@@ -214,7 +214,9 @@ export class SceneManager {
       world.height * 0.13
     );
     world.fireworks.intensity = 'ambient';
-    world.skyAlpha = 0.9;
+    /* On a short screen the card and the constellation cannot both have the
+       frame, so the lights drop back to being atmosphere. */
+    world.skyAlpha = world.height < 560 ? 0.42 : 0.9;
 
     await this.wait(700);
     await ui.revealGreeting();

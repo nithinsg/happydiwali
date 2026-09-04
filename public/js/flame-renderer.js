@@ -164,10 +164,10 @@ export function drawDiyaBody(ctx, x, y, w, litness = 0) {
   ctx.bezierCurveTo(x + rx * 0.46, y + depth, x + rx * 0.99, y + depth * 0.66, x + rx, y);
   ctx.closePath();
   const clay = ctx.createLinearGradient(x - rx, y, x + rx * 0.7, y + depth);
-  clay.addColorStop(0, rgb([26, 17, 13], [74, 44, 28], litness));
-  clay.addColorStop(0.34, rgb([48, 30, 21], [128, 76, 44], litness));
-  clay.addColorStop(0.72, rgb([33, 20, 15], [92, 53, 31], litness));
-  clay.addColorStop(1, rgb([18, 11, 9], [44, 25, 16], litness));
+  clay.addColorStop(0, rgb([19, 13, 10], [74, 44, 28], litness));
+  clay.addColorStop(0.34, rgb([36, 23, 16], [128, 76, 44], litness));
+  clay.addColorStop(0.72, rgb([24, 15, 11], [92, 53, 31], litness));
+  clay.addColorStop(1, rgb([13, 9, 7], [44, 25, 16], litness));
   ctx.fillStyle = clay;
   ctx.fill();
 
@@ -176,28 +176,28 @@ export function drawDiyaBody(ctx, x, y, w, litness = 0) {
   ctx.moveTo(x - w * 0.13, y + ry * 0.55);
   ctx.quadraticCurveTo(x, y + ry * 2.05, x + w * 0.13, y + ry * 0.55);
   ctx.closePath();
-  ctx.fillStyle = rgb([40, 25, 18], [104, 61, 36], litness);
+  ctx.fillStyle = rgb([30, 19, 14], [104, 61, 36], litness);
   ctx.fill();
 
   /* ---- rim: the opening ---- */
   ctx.beginPath();
   ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
   const rim = ctx.createLinearGradient(x, y - ry, x, y + ry);
-  rim.addColorStop(0, rgb([40, 25, 18], [116, 69, 40], litness));
-  rim.addColorStop(1, rgb([21, 13, 10], [68, 39, 23], litness));
+  rim.addColorStop(0, rgb([31, 20, 14], [116, 69, 40], litness));
+  rim.addColorStop(1, rgb([16, 10, 8], [68, 39, 23], litness));
   ctx.fillStyle = rim;
   ctx.fill();
 
   /* the inner cavity, a touch darker than the lip */
   ctx.beginPath();
   ctx.ellipse(x, y + ry * 0.16, rx * 0.86, ry * 0.72, 0, 0, Math.PI * 2);
-  ctx.fillStyle = rgb([14, 9, 7], [58, 31, 18], litness);
+  ctx.fillStyle = rgb([11, 7, 6], [58, 31, 18], litness);
   ctx.fill();
 
   /* a thin highlight along the back lip so the shape reads in the dark */
   ctx.beginPath();
   ctx.ellipse(x, y, rx * 0.985, ry * 0.985, 0, Math.PI * 1.06, Math.PI * 1.94);
-  ctx.strokeStyle = `rgba(${lerp(120, 255, litness) | 0},${lerp(88, 196, litness) | 0},${lerp(62, 120, litness) | 0},${0.24 + litness * 0.4})`;
+  ctx.strokeStyle = `rgba(${lerp(120, 255, litness) | 0},${lerp(88, 196, litness) | 0},${lerp(62, 120, litness) | 0},${0.17 + litness * 0.47})`;
   ctx.lineWidth = Math.max(0.6, w * 0.012);
   ctx.stroke();
 

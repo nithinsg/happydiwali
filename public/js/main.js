@@ -7,7 +7,7 @@
  */
 
 import { World } from './world.js';
-import { SceneManager, STATES } from './scene-manager.js';
+import { SceneManager } from './scene-manager.js';
 import { AudioManager } from './audio-manager.js';
 import { ShareManager } from './share-manager.js';
 import { UI } from './ui.js';
@@ -203,14 +203,8 @@ function boot() {
 
   const replayBtn = document.getElementById('replay-button');
   replayBtn.addEventListener('click', () => {
-    ui.setPhase(STATES.INTRO);
     scene.replay();
   });
-
-  scene.onState = (s) => {
-    /* the sky is the payoff — let the words dim it a little, never hide it */
-    if (s === STATES.FINAL_GREETING || s === STATES.SHARE) world.skyAlpha = 0.92;
-  };
 
   /* ------------------------------------------------------ fonts */
 
