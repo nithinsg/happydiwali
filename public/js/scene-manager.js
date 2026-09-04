@@ -236,6 +236,14 @@ export class SceneManager {
     world.skyAlpha = world.height < 560 ? 0.42 : 0.9;
 
     await this.wait(700);
+    /* The Telugu face is 21 KB and nothing needs it until this moment, so it
+       is fetched now rather than at the cold open. */
+    if (document.fonts && document.fonts.load) {
+      await Promise.race([
+        document.fonts.load('500 24px "Noto Sans Telugu"', 'శుభ దీపావళి మీకు'),
+        new Promise((r) => setTimeout(r, 1500)),
+      ]).catch(() => {});
+    }
     await ui.revealGreeting();
     await this.wait(2200);
 

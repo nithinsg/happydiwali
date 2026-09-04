@@ -15,7 +15,7 @@
  *
  * All four families are © their authors under the SIL Open Font License 1.1.
  */
-import { writeFile, mkdir, readFile } from 'node:fs/promises';
+import { writeFile, mkdir, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
@@ -27,7 +27,14 @@ const LATIN =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' +
   ' .,:;!?\'"()[]{}-–—…/&+%#@*·’‘“”°';
 const DEVANAGARI = 'शुभ दीपावली';
-const TELUGU = 'శుభ దీపావళి';
+/* every Telugu string the page renders, so the subset carries their glyphs */
+const TELUGU = [
+  'శుభ దీపావళి',
+  'ఈ దీపావళి మీరు నడిచే ప్రతి దారికి వెలుగును, ప్రతి ఇంటికి వెచ్చదనాన్ని, ప్రతి కొత్త ఆరంభానికి ఆశను తీసుకురావాలి.',
+  'మీకు, మీ కుటుంబ సభ్యులకు ఆనందం, ఆరోగ్యం, శాంతి, సౌభాగ్యం కలగాలని మనస్ఫూర్తిగా కోరుకుంటున్నాను.',
+  'మీ దీపావళి సురక్షితంగా, ఆనందంగా, అందంగా సాగాలి.',
+  'హృదయపూర్వక దీపావళి శుభాకాంక్షలు',
+].join(' ');
 
 const FAMILIES = [
   { id: 'cormorant', spec: 'Cormorant+Garamond:wght@300;500;600', text: LATIN },
@@ -42,6 +49,8 @@ const get = async (url, asBuffer = false) => {
   return asBuffer ? Buffer.from(await res.arrayBuffer()) : res.text();
 };
 
+/* start clean so a narrowed subset never leaves a stale, larger file behind */
+await rm(OUT_DIR, { recursive: true, force: true });
 await mkdir(OUT_DIR, { recursive: true });
 
 let out = [

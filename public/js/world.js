@@ -299,7 +299,7 @@ export class World {
     /* a tight box: the glyphs should fill it, not float inside it */
     const rect = landscape
       ? { x: w * 0.11, y: h * 0.04, w: w * 0.78, h: h * 0.34 }
-      : { x: w * 0.02, y: h * 0.105, w: w * 0.96, h: h * 0.26 };
+      : { x: w * 0.02, y: h * 0.07, w: w * 0.96, h: h * 0.225 };
 
     const active = this.particles.activeParticles(this._scratch);
     const ceiling = this.particles.capacity - 24;

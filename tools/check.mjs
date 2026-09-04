@@ -174,6 +174,15 @@ const stats = await page.evaluate(() => {
       qualityCap: window.__diwali.world.qualityCap,
     } : null,
     greetingVisible: document.getElementById('greeting')?.dataset.visible,
+    greetingFit: (() => {
+      const el = document.getElementById('greeting');
+      if (!el) return null;
+      return {
+        overflowPx: Math.max(0, el.scrollHeight - el.clientHeight),
+        scale: (getComputedStyle(el).getPropertyValue('--g-scale') || '1').trim(),
+        heightPct: Math.round((el.clientHeight / window.innerHeight) * 100),
+      };
+    })(),
     shareVisible: document.getElementById('share-block')?.dataset.visible,
     teluguRendered: (() => {
       const el = document.querySelector('.greeting__script');
@@ -194,6 +203,8 @@ console.log(`worst frame            ${stats.worstMs}ms`);
 console.log(`horizontal scroll      ${stats.hScroll ? 'YES (bug)' : 'no'}`);
 console.log(`page scroll            ${stats.vScroll ? 'YES (bug)' : 'no'}`);
 console.log(`greeting / share       ${stats.greetingVisible} / ${stats.shareVisible}`);
+const gf = stats.greetingFit || {};
+console.log(`greeting fit           ${gf.overflowPx === 0 ? 'no scroll' : `SCROLLS by ${gf.overflowPx}px`}  (scale ${gf.scale}, ${gf.heightPct}% of viewport)`);
 console.log(`telugu line            ${JSON.stringify(stats.teluguRendered)}`);
 console.log(`device                 ${stats.cores} cores / ${stats.mem} GB`);
 console.log(`sky                    ${JSON.stringify(stats.sky)}`);

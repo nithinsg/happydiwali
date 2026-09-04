@@ -69,6 +69,7 @@ function boot() {
     resizeRaf = 0;
     world.resize();
     ui.setHeroMetrics(world.width * 0.5, world.heroY, world.heroW);
+    ui.fitGreeting();
   };
   const queueResize = () => {
     if (resizeRaf) return;
@@ -214,7 +215,6 @@ function boot() {
     ['700 48px "Noto Serif Devanagari"', 'शुभ दीपावली'],
     ['600 48px "Cormorant Garamond"', 'HAPPY DIWALI'],
     ['300 24px "Cormorant Garamond"', 'Some lights'],
-    ['500 24px "Noto Sans Telugu"', 'శుభ దీపావళి'],
     ['400 16px "Inter"', 'Light the first diya'],
   ];
   const fontsReady = (document.fonts && document.fonts.load)
@@ -225,6 +225,11 @@ function boot() {
     ui.hideLoader();
     scene.start();
   });
+
+  /* a late font swap changes the card's height; re-measure when it settles */
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => ui.fitGreeting()).catch(() => {});
+  }
 
   window.addEventListener('pagehide', () => audio.disable());
 }

@@ -62,6 +62,6 @@
   font-weight: 500;
   font-display: swap;
   src: url('/fonts/notosanstelugu-500.woff2') format('woff2');
-  unicode-range: U+20, U+c26, U+c2a, U+c2d, U+c33, U+c35-c36, U+c3e-c41;
+  unicode-range: U+20, U+2c, U+2e, U+c02, U+c05-c08, U+c15, U+c17, U+c1a, U+c1f, U+c21, U+c24, U+c26, U+c28, U+c2a-c30, U+c32-c33, U+c35-c39, U+c3e-c43, U+c46-c47, U+c4a-c4d;
 }
 

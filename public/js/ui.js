@@ -119,16 +119,47 @@ export class UI {
   async revealGreeting() {
     this.el.scrim.dataset.visible = 'true';
     this.el.greeting.hidden = false;
+    /* the share block is measured with the rest: it appears moments later and
+       must not be what finally pushes the card into a scroll */
+    this.el.share.hidden = false;
+    this.fitGreeting();
     void this.el.greeting.offsetHeight;
     this.el.greeting.dataset.visible = 'true';
     await this._wait(900);
+    /* measure again once the Telugu face has actually painted — a fallback
+       font can measure short and let the card overflow after it swaps */
+    this.fitGreeting();
   }
 
   async revealShare() {
     this.el.share.hidden = false;
     void this.el.share.offsetHeight;
     this.el.share.dataset.visible = 'true';
+    this.fitGreeting();
     await this._wait(600);
+  }
+
+  /**
+   * Shrink the greeting until it fits its box.
+   *
+   * Everything in the card is sized in em from one root value, so a single
+   * variable scales the whole thing. A greeting nobody can read without
+   * scrolling isn't a greeting, and no fixed type scale survives every phone,
+   * browser chrome and font fallback — so measure, then fit.
+   */
+  fitGreeting() {
+    const el = this.el.greeting;
+    if (!el || el.hidden) return;
+    let scale = 1;
+    el.style.setProperty('--g-scale', '1');
+    // reflow-bounded loop: at most 14 steps, never below 62% of the base size
+    for (let i = 0; i < 14; i++) {
+      // equality means it fits exactly; any excess at all is a scroll
+      if (el.scrollHeight <= el.clientHeight) break;
+      scale -= 0.035;
+      if (scale < 0.62) { scale = 0.62; el.style.setProperty('--g-scale', '0.62'); break; }
+      el.style.setProperty('--g-scale', scale.toFixed(3));
+    }
   }
 
   toast(message) {

@@ -106,9 +106,9 @@ body { text-rendering: optimizeLegibility; }
   z-index: 5;
   opacity: 0;
   background: linear-gradient(to bottom,
-    rgba(5, 7, 13, 0) 22%,
-    rgba(5, 7, 13, 0.42) 46%,
-    rgba(5, 7, 13, 0.86) 70%,
+    rgba(5, 7, 13, 0) 14%,
+    rgba(5, 7, 13, 0.52) 33%,
+    rgba(5, 7, 13, 0.88) 56%,
     rgba(5, 7, 13, 0.95) 100%);
   transition: opacity 1.6s var(--ease);
 }
@@ -271,77 +271,118 @@ body { text-rendering: optimizeLegibility; }
   bottom: 0;
   transform: translateX(-50%);
   width: min(100%, 640px);
-  max-height: min(66%, 620px);
+  max-height: 78%;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  padding: 4px 24px calc(20px + var(--safe-b));
+  padding: 4px 22px calc(16px + var(--safe-b));
   text-align: center;
   opacity: 0;
   transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
+
+  /* Everything inside is sized in em from this one value, so the card can be
+     scaled to fit the viewport in a single step. Nobody should have to scroll
+     to read a greeting. */
+  font-size: calc(clamp(13px, 4.05vw, 17px) * var(--g-scale, 1));
 }
 .greeting[hidden] { display: none; }
 .greeting[data-visible="false"] { transform: translate(-50%, 14px); }
 .greeting[data-visible="true"] { opacity: 1; transform: translateX(-50%); }
 
 .greeting__script {
-  margin: 0 0 14px;
+  margin: 0 0 0.7em;
   font-family: var(--telugu);
   font-weight: 500;
-  font-size: clamp(1.45rem, 6.2vw, 2.15rem);
+  font-size: 1.72em;
   line-height: 1.5;
   color: var(--warm);
   text-shadow: 0 0 30px rgba(255, 178, 84, 0.42), 0 2px 18px rgba(0, 0, 0, 0.6);
 }
 
-.greeting__quote {
-  margin: 0 0 18px;
+/* the Telugu wish leads — this greeting is written in Telugu first */
+.greeting__wish {
+  margin: 0 0 1em;
   padding: 0;
+  font-family: var(--telugu);
+  font-weight: 500;
+  font-size: 0.94em;
+  line-height: 1.72;
+  color: rgba(246, 238, 223, 0.94);
+}
+.greeting__wish p { margin: 0 0 0.5em; }
+.greeting__wish p:last-child { margin-bottom: 0; }
+
+.greeting__quote {
+  position: relative;
+  margin: 0 0 1.05em;
+  padding: 1em 0 0;
   font-family: var(--serif);
   font-weight: 300;
-  font-size: clamp(0.98rem, 4.05vw, 1.22rem);
-  line-height: 1.62;
-  color: rgba(246, 238, 223, 0.88);
+  font-size: 0.98em;
+  line-height: 1.58;
+  color: rgba(246, 238, 223, 0.76);
 }
-.greeting__quote p { margin: 0 0 0.55em; }
+/* a hairline between the two languages, not a heavy divider */
+.greeting__quote::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3.4em;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 215, 106, 0), rgba(255, 215, 106, 0.38), rgba(255, 215, 106, 0));
+}
+.greeting__quote p { margin: 0 0 0.5em; }
 .greeting__quote p:last-child { margin-bottom: 0; }
 
 .greeting__signoff {
-  margin: 0 0 4px;
+  margin: 0;
+  font-family: var(--telugu);
+  font-weight: 500;
+  font-size: 0.86em;
+  line-height: 1.5;
+  color: rgba(246, 238, 223, 0.62);
+}
+.greeting__signoff--en {
+  margin: 0.1em 0 0.3em;
   font-family: var(--sans);
-  font-size: 0.74rem;
+  font-size: 0.7em;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: rgba(246, 238, 223, 0.56);
+  color: rgba(246, 238, 223, 0.48);
 }
 
 .greeting__name {
   margin: 0;
   font-family: var(--serif);
   font-weight: 500;
-  font-size: clamp(1.15rem, 4.9vw, 1.5rem);
+  font-size: 1.32em;
   letter-spacing: 0.045em;
   color: var(--ink);
 }
 .greeting__name::after {
   content: "";
   display: block;
-  width: 44px;
+  width: 2.6em;
   height: 1px;
-  margin: 14px auto 0;
+  margin: 0.8em auto 0;
   background: linear-gradient(to right, rgba(255, 215, 106, 0), rgba(255, 215, 106, 0.55), rgba(255, 215, 106, 0));
 }
 
 /* --------------------------------------------------------------- share */
 
 .share {
-  margin-top: 20px;
+  margin-top: 1.1em;
   opacity: 0;
+  /* laid out (so the card is measured with it) but neither seen nor tabbable
+     until the moment it is revealed */
+  visibility: hidden;
   transform: translateY(10px);
   transition: opacity 1s var(--ease), transform 1s var(--ease);
 }
 .share[hidden] { display: none; }
-.share[data-visible="true"] { opacity: 1; transform: none; }
+.share[data-visible="true"] { opacity: 1; visibility: visible; transform: none; }
 
 .share__button {
   display: inline-flex;
@@ -349,14 +390,14 @@ body { text-rendering: optimizeLegibility; }
   justify-content: center;
   gap: 0.5em;
   min-height: 48px;
-  padding: 13px 28px;
+  padding: 0.82em 1.75em;
   border-radius: 999px;
   border: 1px solid rgba(255, 205, 118, 0.45);
   background:
     linear-gradient(180deg, rgba(255, 197, 104, 0.16), rgba(243, 166, 59, 0.07));
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 0.92rem;
+  font-size: 0.92em;
   font-weight: 500;
   letter-spacing: 0.03em;
   cursor: pointer;
@@ -376,17 +417,17 @@ body { text-rendering: optimizeLegibility; }
 }
 
 .share__note {
-  margin: 12px 0 0;
+  margin: 0.75em 0 0;
   font-family: var(--sans);
-  font-size: 0.76rem;
+  font-size: 0.76em;
   line-height: 1.5;
   color: rgba(246, 238, 223, 0.62);
 }
 
 .share__alt {
-  margin: 10px 0 0;
+  margin: 0.62em 0 0;
   font-family: var(--sans);
-  font-size: 0.72rem;
+  font-size: 0.72em;
   color: rgba(246, 238, 223, 0.46);
   display: flex;
   gap: 0.7em;
@@ -531,9 +572,10 @@ body { text-rendering: optimizeLegibility; }
   line-height: 1.6;
   color: var(--ink);
 }
-.noscript p:first-child {
-  font-family: var(--deva);
-  font-size: 1.9rem;
+.noscript__script {
+  font-family: var(--telugu);
+  font-weight: 500;
+  font-size: 1.8rem;
   color: var(--warm);
 }
 
@@ -552,10 +594,13 @@ body { text-rendering: optimizeLegibility; }
   }
   [data-phase="FINAL_GREETING"] .caption,
   [data-phase="SHARE"] .caption { top: 50%; }
-  .greeting { max-height: 88%; padding-top: 10px; }
-  .greeting__script { font-size: clamp(1.2rem, 5vh, 1.7rem); margin-bottom: 8px; }
-  .greeting__quote { font-size: clamp(0.86rem, 2.9vh, 1.02rem); line-height: 1.5; margin-bottom: 12px; }
-  .share { margin-top: 12px; }
+  .greeting {
+    max-height: 94%;
+    padding-top: 8px;
+    font-size: calc(clamp(11px, 2.4vh, 15px) * var(--g-scale, 1));
+  }
+  .greeting__wish { line-height: 1.6; }
+  .greeting__quote { line-height: 1.48; }
   .hint { top: calc(var(--hero-y) + var(--hero-w) * 0.5); }
 }
 
@@ -569,11 +614,11 @@ body { text-rendering: optimizeLegibility; }
   [data-phase="FINAL_GREETING"] .caption,
   [data-phase="SHARE"] .caption { top: 55%; }
   .greeting {
-    width: min(92vw, 660px);
-    max-height: 56%;
-    padding-bottom: 40px;
+    width: min(92vw, 680px);
+    max-height: 66%;
+    padding-bottom: 32px;
+    font-size: calc(17px * var(--g-scale, 1));
   }
-  .greeting__quote { font-size: 1.18rem; }
   .sound { top: 20px; right: 20px; width: 44px; height: 44px; }
 }
 

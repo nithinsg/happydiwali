@@ -33,7 +33,7 @@ public/
   index.html          the whole document — every word of the greeting is real HTML
   styles.css          design system, layout, motion, reduced-motion fallbacks
   fonts.css           @font-face for the self-hosted subsets (generated)
-  fonts/              4 woff2 subsets, 55 KB total
+  fonts/              4 woff2 subsets, 73 KB total (Telugu fetched late)
   og.jpg              social preview (generated)
   js/
     main.js           bootstrap: canvas, loop, input, degradation, error paths
@@ -66,6 +66,12 @@ the sampling pitch when it joins a letter, and a very faint warm bloom of the
 same mask sits behind the swarm — the light the assembled lamps would cast
 between themselves.
 
+**The greeting is written in Telugu first, then English,** and the card
+measures itself against the viewport and scales down until it fits — no
+phone, browser chrome or font fallback should make someone scroll to read a
+wish. The Telugu face is the largest of the four and nothing needs it until
+the final scene, so it is fetched then rather than at the cold open.
+
 **Nothing is autoplayed and nothing is collected.** No name, no email, no
 analytics, no cookies, no backend. Audio is synthesised with Web Audio and only
 after the viewer asks for it.
@@ -93,11 +99,11 @@ budget. `--shots` writes screenshots of each beat to `tools/out/`.
 
 ### Changing the greeting text
 
-`tools/fetch-fonts.mjs` subsets the Devanagari and Telugu faces down to the exact
-phrases they render (2–4 KB each). If you change **शुभ दीपावली** in
-`js/scene-manager.js` or **శుభ దీపావళి** in `index.html`, update the matching
-constant in the fetch script and re-run it, or the new characters will have no
-glyphs.
+`tools/fetch-fonts.mjs` subsets the Devanagari and Telugu faces down to the
+exact text they render. If you change the Devanagari constellation line in
+`js/scene-manager.js`, or any of the Telugu in `index.html` (the heading, the
+wish, or the sign-off), update the matching constant in the fetch script and
+re-run it — otherwise the new characters will have no glyphs.
 
 ## Deploying
 
