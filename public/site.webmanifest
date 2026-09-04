@@ -1,0 +1,13 @@
+{
+  "name": "A Sky Full of Diyas",
+  "short_name": "Diyas",
+  "description": "A little light becomes brighter when we share it. Wishing you and your loved ones a beautiful Diwali.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05070D",
+  "theme_color": "#05070D",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="A lit diya">
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="42%" r="52%">
+      <stop offset="0%" stop-color="#FFF4C2" stop-opacity=".95"/>
+      <stop offset="34%" stop-color="#FFC46A" stop-opacity=".45"/>
+      <stop offset="72%" stop-color="#F3A63B" stop-opacity=".12"/>
+      <stop offset="100%" stop-color="#F3A63B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#FF7A22"/>
+      <stop offset="45%" stop-color="#FFC15A"/>
+      <stop offset="100%" stop-color="#FFF4C2"/>
+    </linearGradient>
+    <linearGradient id="clay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#B06A3C"/>
+      <stop offset="55%" stop-color="#8A4F2C"/>
+      <stop offset="100%" stop-color="#4E2C1A"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="#05070D"/>
+  <circle cx="32" cy="28" r="30" fill="url(#halo)"/>
+  <path d="M32 12c4.6 5.6 6.8 9.6 6.8 13.4 0 4.2-3 7.2-6.8 7.2s-6.8-3-6.8-7.2C25.2 21.6 27.4 17.6 32 12z" fill="url(#flame)"/>
+  <path d="M32 17.8c2.4 3.2 3.4 5.4 3.4 7.4 0 2.4-1.5 4-3.4 4s-3.4-1.6-3.4-4c0-2 1-4.2 3.4-7.4z" fill="#FFFBE8" opacity=".9"/>
+  <path d="M13 38h38c-1.6 8.2-8.8 13-19 13s-17.4-4.8-19-13z" fill="url(#clay)"/>
+  <ellipse cx="32" cy="38" rx="19" ry="4.2" fill="#5E3521"/>
+  <ellipse cx="32" cy="38" rx="12" ry="2.4" fill="#C07B42" opacity=".55"/>
+</svg>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--
+  Source for the Open Graph / WhatsApp preview image.
+  Rendered to public/og.png by tools/make-og.mjs, using the same flame and
+  scenery renderers as the site so the preview and the page match.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/public/fonts.css">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #05070D; }
+  #wrap { position: relative; width: 1200px; height: 630px; }
+  canvas { position: absolute; inset: 0; }
+  #copy {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; text-align: center; padding-bottom: 118px;
+  }
+  .deva {
+    font-family: "Noto Serif Devanagari", serif; font-weight: 700; font-size: 92px;
+    line-height: 1.18; color: #FFD76A;
+    text-shadow: 0 0 60px rgba(255, 172, 72, .55), 0 4px 30px rgba(0, 0, 0, .7);
+  }
+  .title {
+    font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: 42px;
+    letter-spacing: .16em; text-transform: uppercase; color: #F6EEDF;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, .8);
+  }
+  .sub {
+    font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 30px;
+    letter-spacing: .01em; color: rgba(246, 238, 223, .68); margin-top: 4px;
+  }
+  .rule {
+    width: 120px; height: 1px; margin: 8px 0 2px;
+    background: linear-gradient(to right, rgba(255,215,106,0), rgba(255,215,106,.6), rgba(255,215,106,0));
+  }
+  #vig {
+    position: absolute; inset: 0;
+    background: radial-gradient(112% 84% at 50% 46%, rgba(0,0,0,0) 40%, rgba(0,0,0,.36) 74%, rgba(0,0,0,.66) 100%);
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="bg" width="1200" height="630"></canvas>
+  <canvas id="fg" width="1200" height="630"></canvas>
+  <div id="vig"></div>
+  <div id="copy">
+    <div class="deva">शुभ दीपावली</div>
+    <div class="rule"></div>
+    <div class="title">A Sky Full of Diyas</div>
+    <div class="sub">Some lights are meant to be shared.</div>
+  </div>
+</div>
+
+<script type="module">
+import { renderBackground } from '/public/js/scenery.js';
+import { buildDiyaAtlas, buildGlowSprite, drawDiyaBody, drawFlame } from '/public/js/flame-renderer.js';
+
+const W = 1200, H = 630, GROUND = H * 0.90;
+
+renderBackground(document.getElementById('bg').getContext('2d'), W, H, { groundY: GROUND });
+
+const ctx = document.getElementById('fg').getContext('2d');
+const atlas = buildDiyaAtlas(96);
+const glow = buildGlowSprite(64);
+
+/* a warm ground wash, as at the end of the experience */
+ctx.save();
+ctx.globalCompositeOperation = 'lighter';
+const wash = ctx.createLinearGradient(0, H * 0.42, 0, H);
+wash.addColorStop(0, 'rgba(120,58,22,0)');
+wash.addColorStop(1, 'rgba(150,74,28,0.40)');
+ctx.fillStyle = wash;
+ctx.fillRect(0, H * 0.42, W, H * 0.58);
+ctx.restore();
+
+/* the sky of lamps: dense but not even, and thinned where the words sit */
+const rng = (() => { let a = 424242; return () => {
+  a |= 0; a = (a + 0x6d2b79f5) | 0;
+  let t = Math.imul(a ^ (a >>> 15), 1 | a);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}; })();
+
+const lamps = [];
+for (let i = 0; i < 190; i++) {
+  const depth = Math.pow(rng(), 1.5);
+  const x = rng() * (W + 80) - 40;
+  const y = Math.pow(rng(), 0.85) * (GROUND + 30);
+  // keep the middle band clear so the headline stays legible
+  const inCopy = x > W * 0.16 && x < W * 0.84 && y > H * 0.28 && y < H * 0.70;
+  if (inCopy && rng() < 0.86) continue;
+  lamps.push({ x, y, depth, size: 15 + depth * depth * 44, frame: (rng() * atlas.frames) | 0 });
+}
+lamps.sort((a, b) => a.depth - b.depth);
+
+ctx.save();
+ctx.globalCompositeOperation = 'lighter';
+for (const l of lamps) {
+  ctx.globalAlpha = 0.45 + l.depth * 0.55;
+  ctx.drawImage(atlas.canvas, l.frame * atlas.tile, 0, atlas.tile, atlas.tile,
+                l.x - l.size / 2, l.y - l.size * atlas.anchorY, l.size, l.size);
+}
+ctx.restore();
+
+/* the one diya the viewer would light */
+const hx = W * 0.5, hy = H * 0.845, hw = 150;
+drawDiyaBody(ctx, hx, hy, hw, 1);
+drawFlame(ctx, hx, hy - hw * 0.032, hw * 0.39, 0.7, 1.3, 1, 1);
+
+/* a couple of distant, restrained bursts near the edges */
+for (const [bx, by, r] of [[W * 0.115, H * 0.20, 62], [W * 0.885, H * 0.15, 46]]) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 26; i++) {
+    const a = (i / 26) * Math.PI * 2 + rng() * 0.2;
+    const d = r * (0.55 + rng() * 0.55);
+    const s = 7 + rng() * 8;
+    ctx.globalAlpha = 0.22 + rng() * 0.2;
+    ctx.drawImage(glow, bx + Math.cos(a) * d - s / 2, by + Math.sin(a) * d - s / 2, s, s);
+  }
+  ctx.globalAlpha = 0.3;
+  ctx.drawImage(glow, bx - r * 0.7, by - r * 0.7, r * 1.4, r * 1.4);
+  ctx.restore();
+}
+
+document.documentElement.dataset.ready = 'true';
+</script>
+</body>
+</html>
